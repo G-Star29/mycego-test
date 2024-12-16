@@ -1,11 +1,11 @@
 import asyncio
 import io
 import zipfile
-
 import aiohttp
-import requests
-
 from typing import List
+
+from django.core.cache import cache
+
 from src.domain.interfaces import PublicDiskClientInterface
 from src.domain.models import FileResource
 
@@ -18,12 +18,20 @@ class FileService(PublicDiskClientInterface):
     def __init__(self, disk_client: PublicDiskClientInterface):
         self.disk_client = disk_client
 
-    async def list_files(self, public_key: str) -> List[FileResource]:
+    async def list_files(self, public_key: str, cache_timeout: int = 300) -> List[FileResource]:
         """
         Вызывает функцию для получения списка с сервиса (disk_client)
         """
+        cache_key = f'file_list_{public_key}'
 
-        return await self.disk_client.get_files_list(public_key)
+        cached_files = cache.get(cache_key)
+        if cached_files:
+            return cached_files
+
+        files = await self.disk_client.get_files_list(public_key)
+        cache.set(cache_key, files, cache_timeout)
+
+        return files
 
     @staticmethod
     async def download_file(session: aiohttp.ClientSession, url: str) -> bytes:
