@@ -30,7 +30,9 @@ class AsyncYandexDiskClient(PublicDiskClientInterface):
 
 
     async def get_download_url(self, public_key: str, file_path: str) -> str:
-        """Переопределяем функцию для работы с Yandex API"""
+        """
+        Переопределяем функцию для работы с Yandex API
+        """
 
         url = 'https://cloud-api.yandex.net/v1/disk/public/resources/download'
         params = {'public_key': public_key, 'path': file_path}

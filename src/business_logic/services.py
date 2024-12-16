@@ -34,6 +34,9 @@ class FileService(PublicDiskClientInterface):
         return files
 
     async def get_filtered_files(self, public_key: str, filter_type: str | None) -> List[FileResource]:
+        """
+        Получить все файлы с фильтром или без него
+        """
         files = await self.list_files(public_key)
         if not filter_type:
             return files
