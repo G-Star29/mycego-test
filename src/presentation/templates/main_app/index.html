@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Введите public_key</title>
+</head>
+<body>
+<h1>Введите публичную ссылку Яндекс.Диск</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Загрузить список</button>
+</form>
+</body>
+</html>

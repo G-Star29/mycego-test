@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список файлов</title>
+</head>
+<body>
+<h1>Список файлов с Яндекс.Диска</h1>
+
+<form method="post" action="{% url 'download_multiple_files' %}">
+    {% csrf_token %}
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Выбрать</th>
+            <th>Имя файла</th>
+            <th>Тип</th>
+            <th>Размер (байт)</th>
+        </tr>
+        {% for file in files_list %}
+        <tr>
+            <td>
+                <input type="checkbox" name="selected_files" value="{{ file.path }}">
+            </td>
+            <td>{{ file.name }}</td>
+            <td>{{ file.mime_type }}</td>
+            <td>{{ file.size }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <button type="submit">Скачать выбранные файлы</button>
+</form>
+
+<a href="{% url 'index' %}">Назад</a>
+</body>
+</html>
