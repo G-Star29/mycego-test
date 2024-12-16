@@ -8,7 +8,7 @@ from django.core.cache import cache
 
 from src.domain.interfaces import PublicDiskClientInterface
 from src.domain.models import FileResource
-
+from src.business_logic.filter_const import FILE_FILTERS
 
 class FileService(PublicDiskClientInterface):
     """
@@ -32,6 +32,22 @@ class FileService(PublicDiskClientInterface):
         cache.set(cache_key, files, cache_timeout)
 
         return files
+
+    async def get_filtered_files(self, public_key: str, filter_type: str | None) -> List[FileResource]:
+        files = await self.list_files(public_key)
+        if not filter_type:
+            return files
+
+        mime_types = FILE_FILTERS.get(filter_type)
+        if not mime_types:
+            return files
+
+        filtered_files = [
+            file for file in files
+            if file.mime_type and any(file.mime_type.startswith(mime) for mime in mime_types)
+        ]
+
+        return filtered_files
 
     @staticmethod
     async def download_file(session: aiohttp.ClientSession, url: str) -> bytes:

@@ -7,6 +7,19 @@
 <body>
 <h1>Список файлов с Яндекс.Диска</h1>
 
+<!-- Форма для фильтрации файлов -->
+<form method="get" action="{% url 'list_files' %}">
+    <label for="filter">Фильтровать по типу:</label>
+    <select name="filter" id="filter">
+        <option value="" {% if not current_filter %}selected{% endif %}>Все файлы</option>
+        <option value="image" {% if current_filter == "image" %}selected{% endif %}>Изображения</option>
+        <option value="document" {% if current_filter == "document" %}selected{% endif %}>Документы</option>
+        <option value="video" {% if current_filter == "video" %}selected{% endif %}>Видео</option>
+    </select>
+    <button type="submit">Применить</button>
+</form>
+
+<!-- Форма для выбора файлов и их скачивания -->
 <form method="post" action="{% url 'download_multiple_files' %}">
     {% csrf_token %}
     <table border="1" cellpadding="5">

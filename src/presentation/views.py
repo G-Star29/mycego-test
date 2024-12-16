@@ -36,12 +36,14 @@ async def list_files_view(request) -> HttpResponse:
     # Инициализация сервиса и клиента
     disk_client = AsyncYandexDiskClient()
     file_service = FileService(disk_client=disk_client)
+    file_filter = await sync_to_async(request.GET.get)('filter', '')
+
     try:
-        files_list = await file_service.list_files(public_key)
+        files_list = await file_service.get_filtered_files(public_key, file_filter)
     except Exception as e:
         return HttpResponse(f"Ошибка при получении списка: {e}", status=400)
 
-    return render(request, 'main_app/list_files.html', {'files_list': files_list})
+    return render(request, 'main_app/list_files.html', {'files_list': files_list, 'current_filter': file_filter})
 
 
 async def download_multiple_files_view(request) -> HttpResponse:
